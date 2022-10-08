@@ -23,25 +23,8 @@
 
 static const char *TAG = "main";
 
-/**
- * Brief:
- * This test code shows how to configure gpio and how to use gpio interrupt.
- *
- * GPIO status:
- * GPIO15: output
- * GPIO16: output
- * GPIO4:  input, pulled up, interrupt from rising edge and falling edge
- * GPIO5:  input, pulled up, interrupt from rising edge.
- *
- * Test:
- * Connect GPIO15 with GPIO4
- * Connect GPIO16 with GPIO5
- * Generate pulses on GPIO15/16, that triggers interrupt on GPIO4/5
- *
- */
-
-#define GPIO_OUTPUT_IO    2
-#define GPIO_INPUT_IO   0
+#define GPIO_OUTPUT_IO      2               //Define output pin
+#define GPIO_INPUT_IO       0               //Define input pin
 
 
 static xQueueHandle gpio_evt_queue = NULL;
