@@ -1,33 +1,9 @@
-/* gpio example
+#include "user_main.h"
+#include "test.h"
 
-   This example code is in the Public Domain (or CC0 licensed, at your option.)
-
-   Unless required by applicable law or agreed to in writing, this
-   software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-   CONDITIONS OF ANY KIND, either express or implied.
-*/
-
-
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "freertos/queue.h"
-#include "freertos/semphr.h"
-
-#include "driver/gpio.h"
-
-#include "sys/time.h"
-
-#include "esp_log.h"
-#include "esp_system.h"
-
-SemaphoreHandle_t xMutex;
 static const char *TAG = "main";
 
-#define GPIO_OUTPUT_IO      2               //Define output pin
+
 
 static void wait_for_ms (uint32_t delay)        //Waiting Function
 {
@@ -56,11 +32,9 @@ static void gpio_ON(void*arg)                   //GPIO task to pull pin high
     while(1)
     {
         ESP_LOGI(TAG,"Trying high");
-        xSemaphoreTake(xMutex,portMAX_DELAY);
         gpio_set_level(GPIO_OUTPUT_IO,1);
         ESP_LOGI(TAG,"GPIO set High\n");
         wait_for_ms(500);
-        xSemaphoreGive(xMutex);
         vTaskDelay(1000/ portTICK_PERIOD_MS);
     }
 }
@@ -70,11 +44,9 @@ static void gpio_OFF(void*arg)              //GPIO task to pull pin low
     while(1)
     {
         ESP_LOGI(TAG,"Trying low");
-        xSemaphoreTake(xMutex,portMAX_DELAY);
         gpio_set_level(GPIO_OUTPUT_IO,0);
         ESP_LOGI(TAG,"GPIO set Low\n");
         wait_for_ms(500);
-        xSemaphoreGive(xMutex);
         vTaskDelay(1000/ portTICK_PERIOD_MS);
     }
 }
@@ -95,19 +67,7 @@ void app_main(void)
     //configure GPIO with the given settings
     gpio_config(&io_conf);
 
-    xMutex = xSemaphoreCreateMutex();                   //Creating Mutex and checking for success
-    if(xMutex!=NULL){
-        ESP_LOGI(TAG,"Mutex Created\n");
-    }
-
-    //start gpio tasks
-    xTaskCreate(gpio_ON,"gpio_ON",2048,NULL,2,NULL);    //Creating tasks with set priorities
-    xTaskCreate(gpio_OFF,"gpio_OFF",2048,NULL,1,NULL);
-    xTaskCreate(gpio_level, "gpio_level", 2048, NULL, 3, NULL);
-
-    while (1) {
-
-    }
+    verificationTestStatus();                           //Unit test function from test.h  
 }
 
 
